@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نُور | السور المفضلة</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap');
+        body { font-family: 'Tajawal', sans-serif; background-color: #0b0f19; color: #f3f4f6; }
+        .glow-effect { box-shadow: 0 0 30px -10px rgba(239, 68, 68, 0.2); }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-rose-500 selection:text-white pb-32">
+
+    <header class="w-full p-4 md:px-8 sticky top-0 z-40">
+        <div class="max-w-5xl mx-auto bg-slate-900/60 backdrop-blur-xl border border-slate-800/80 rounded-2xl px-6 py-4 flex items-center justify-between glow-effect">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-rose-600 to-indigo-600 flex items-center justify-center font-black text-xl shadow-lg text-white">❤️</div>
+                <span class="text-xl font-bold tracking-wider bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">المفضلة</span>
+            </div>
+            
+            <nav class="flex items-center gap-2 bg-slate-950/50 p-1.5 rounded-xl border border-slate-800/50 text-sm">
+                <a href="index.html" class="px-4 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/50 transition">القرّاء</a>
+                <a href="azkar.html" class="px-4 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/50 transition">الأذكار</a>
+                <a href="favorites.html" class="px-4 py-2 rounded-lg bg-rose-600/20 text-rose-400 font-semibold border border-rose-500/30">المفضلة</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-5xl w-full mx-auto p-4 md:p-8 flex flex-col gap-8">
+        <div class="bg-gradient-to-r from-rose-950/30 via-slate-900/40 to-slate-900/60 p-8 rounded-3xl border border-rose-500/20 backdrop-blur-md flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-black text-white">قائمة المفضلة ❤️</h1>
+                <p class="text-slate-400 text-sm mt-1">السور والقرّاء المفضلون لديك للوصول السريع</p>
+            </div>
+            <button onclick="clearFavorites()" class="px-4 py-2 rounded-xl bg-rose-600/10 border border-rose-500/20 text-rose-400 hover:bg-rose-600 hover:text-white transition text-xs font-bold shrink-0">حذف الكل</button>
+        </div>
+
+        <div id="favorites-list" class="flex flex-col gap-3"></div>
+    </main>
+
+    <div id="audio-player" class="fixed bottom-4 left-4 right-4 max-w-4xl mx-auto bg-slate-900/90 border border-rose-500/30 rounded-2xl p-4 backdrop-blur-2xl shadow-2xl flex items-center justify-between gap-4 hidden z-50">
+        <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-xl bg-rose-600/20 border border-rose-500/30 flex items-center justify-center text-rose-400 font-bold">🔊</div>
+            <div>
+                <h4 id="player-surah" class="font-bold text-white text-sm">عنوان السورة</h4>
+                <p id="player-reciter" class="text-xs text-slate-400">تلاوة خاشعة</p>
+            </div>
+        </div>
+        <audio id="main-audio" src=""></audio>
+        <button onclick="toggleAudio()" id="play-btn" class="w-12 h-12 rounded-xl bg-rose-600 hover:bg-rose-500 text-white flex items-center justify-center transition shadow-lg">
+            <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+        </button>
+    </div>
+
+    <script>
+        function loadFavorites() {
+            const container = document.getElementById('favorites-list');
+            const favorites = JSON.parse(localStorage.getItem('fav_surahs_items') || '[]');
+
+            if (favorites.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-16 bg-slate-900/30 border border-slate-800 rounded-3xl p-8">
+                        <span class="text-5xl">🤍</span>
+                        <h3 class="text-lg font-bold text-slate-300 mt-4">لا توجد سور في المفضلة بعد</h3>
+                        <p class="text-slate-500 text-sm mt-1">اضغط على زر القلب بجانب أي سورة في صفحة القارئ لإضافتها هنا</p>
+                        <a href="index.html" class="inline-block mt-6 px-6 py-2.5 rounded-xl bg-indigo-600 text-white font-bold text-sm hover:bg-indigo-500 transition">تصفح القراء</a>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = '';
+            favorites.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = "bg-slate-900/40 border border-slate-800/80 p-4 rounded-2xl flex items-center justify-between hover:border-rose-500/40 hover:bg-slate-800/40 transition group cursor-pointer";
+                card.innerHTML = `
+                    <div class="flex items-center gap-4" onclick="playFavTrack('${item.surahName}', '${item.reciterName}', '${item.audioSrc}')">
+                        <span class="w-10 h-10 rounded-xl bg-rose-600/10 text-rose-400 border border-rose-500/20 flex items-center justify-center font-bold text-sm">▶</span>
+                        <div>
+                            <h3 class="font-bold text-white group-hover:text-rose-400 transition">سورة ${item.surahName}</h3>
+                            <span class="text-xs text-slate-400">${item.reciterName}</span>
+                        </div>
+                    </div>
+                    <button onclick="removeFavorite(${index})" class="w-10 h-10 rounded-xl bg-slate-800 text-slate-400 hover:text-rose-500 transition flex items-center justify-center text-sm">✕</button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function removeFavorite(index) {
+            let favorites = JSON.parse(localStorage.getItem('fav_surahs_items') || '[]');
+            favorites.splice(index, 1);
+            localStorage.setItem('fav_surahs_items', JSON.stringify(favorites));
+            loadFavorites();
+        }
+
+        function clearFavorites() {
+            if (confirm("هل أنت تأكد من رغبتك في مسح المفضلة؟")) {
+                localStorage.removeItem('fav_surahs_items');
+                loadFavorites();
+            }
+        }
+
+        const audio = document.getElementById('main-audio');
+        const player = document.getElementById('audio-player');
+        const playBtn = document.getElementById('play-btn');
+
+        function playFavTrack(surah, reciter, src) {
+            document.getElementById('player-surah').textContent = "سورة " + surah;
+            document.getElementById('player-reciter').textContent = reciter;
+            audio.src = src;
+            player.classList.remove('hidden');
+            audio.play();
+            playBtn.innerHTML = '<svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
+        }
+
+        function toggleAudio() {
+            if (audio.paused) {
+                audio.play();
+                playBtn.innerHTML = '<svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
+            } else {
+                audio.pause();
+                playBtn.innerHTML = '<svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+            }
+        }
+
+        loadFavorites();
+    </script>
+</body>
+</html>

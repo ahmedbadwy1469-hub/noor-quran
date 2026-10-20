@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سور القرآن الكريم – نُور</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap');
+        body { font-family: 'Tajawal', sans-serif; background-color: #0b0f19; color: #f3f4f6; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white pb-32">
+
+    <header class="w-full p-4 md:px-8 sticky top-0 z-40">
+        <div class="max-w-5xl mx-auto bg-slate-900/70 backdrop-blur-xl border border-slate-800/80 rounded-2xl px-6 py-4 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-2 text-slate-300 hover:text-white transition text-sm font-semibold">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"></path></svg>
+                الرجوع للقراء
+            </a>
+            <span class="text-sm text-slate-400 font-medium">المصحف الشريف</span>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-5xl w-full mx-auto p-4 md:p-8 flex flex-col gap-8">
+        <div class="bg-gradient-to-r from-indigo-950/50 via-slate-900/60 to-slate-900/40 border border-slate-800 p-6 md:p-8 rounded-3xl flex flex-col md:flex-row items-center md:items-start gap-6 backdrop-blur-md">
+            <div class="w-28 h-28 md:w-36 md:h-36 rounded-2xl bg-slate-800 overflow-hidden border-2 border-indigo-500/40 shadow-2xl shrink-0 flex items-center justify-center text-3xl font-bold text-indigo-400">🎙️</div>
+            <div class="flex flex-col items-center md:items-start text-center md:text-right gap-2 flex-1">
+                <div class="inline-block px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold">المصحف كامل</div>
+                <h1 id="reciter-name" class="text-2xl md:text-4xl font-black text-white">جاري التحميل...</h1>
+                <p class="text-slate-400 text-sm">114 سورة جودة عالية</p>
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-4">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <h2 class="text-xl font-bold text-slate-200">سور القرآن الكريم</h2>
+                <input id="surah-search" type="text" placeholder="ابحث عن سورة..." class="w-full sm:w-64 bg-slate-900/60 border border-slate-800 px-4 py-2.5 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition">
+            </div>
+            <div id="surah-list" class="flex flex-col gap-2"></div>
+        </div>
+    </main>
+
+    <div id="audio-player" class="fixed bottom-4 left-4 right-4 max-w-4xl mx-auto bg-slate-900/90 border border-indigo-500/30 rounded-2xl p-4 backdrop-blur-2xl shadow-2xl flex items-center justify-between gap-4 hidden z-50">
+        <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400 font-bold">🔊</div>
+            <div>
+                <h4 id="player-surah" class="font-bold text-white text-sm">سورة الفاتحة</h4>
+                <p id="player-reciter" class="text-xs text-slate-400">تلاوة خاشعة</p>
+            </div>
+        </div>
+        <audio id="main-audio" src=""></audio>
+        <button onclick="toggleAudio()" id="play-btn" class="w-12 h-12 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white flex items-center justify-center transition shadow-lg">
+            <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+        </button>
+    </div>
+
+    <script>
+        const surahs = ["الفاتحة", "البقرة", "آل عمران", "النساء", "المائدة", "الأنعام", "الأعراف", "الأنفال", "التوبة", "يونس", "هود", "يوسف", "الرعد", "إبراهيم", "الحجر", "النحل", "الإسراء", "الكهف", "مريم", "طه", "الأنبياء", "الحج", "المؤمنون", "النور", "الفرقان", "الشعراء", "النمل", "القصص", "العنكبوت", "الروم", "لقمان", "السجدة", "الأحزاب", "سبأ", "فاطر", "يس", "الصافات", "ص", "الزمر", "غافر", "فصلت", "الشورى", "الزخرف", "الدخان", "الجاثية", "الأحقاف", "محمد", "الفتح", "الحجرات", "ق", "الذاريات", "الطور", "النجم", "القمر", "الرحمن", "الواقعة", "الحديد", "المجادلة", "الحشر", "الممتحنة", "الصف", "الجمعة", "المنافقون", "التغابن", "الطلاق", "التحريم", "الملك", "القلم", "الحاقة", "المعارج", "نوح", "الجن", "المزمل", "المدثر", "القيامة", "الإنسان", "المرسلات", "النبأ", "النازعات", "عبس", "التكوير", "الانفطار", "المطففين", "الانشقاق", "البروج", "الطارق", "الأعلى", "الغاشية", "الفجر", "البلد", "الشمس", "الليل", "الضحى", "الشرح", "التين", "العلق", "القدر", "البينة", "الزلزلة", "العاديات", "القارعة", "التكاثر", "العصر", "الهمزة", "الفيل", "قريش", "الماعون", "الكوثر", "الكافرون", "النصر", "المسد", "الإخلاص", "الفلق", "الناس"];
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const reciterName = urlParams.get('name') || "الشيخ ياسر الدوسري";
+        const serverUrl = urlParams.get('server') || "https://server11.mp3quran.net/yasser/";
+
+        document.getElementById('reciter-name').textContent = reciterName;
+        document.getElementById('player-reciter').textContent = reciterName;
+
+        const surahListContainer = document.getElementById('surah-list');
+
+        surahs.forEach((name, index) => {
+            const surahNumber = index + 1;
+            const formattedNum = String(surahNumber).padStart(3, '0');
+            const audioSrc = `${serverUrl}${formattedNum}.mp3`;
+
+            const surahDiv = document.createElement('div');
+            surahDiv.className = "bg-slate-900/40 border border-slate-800/80 p-4 rounded-2xl flex items-center justify-between hover:border-indigo-500/40 hover:bg-slate-800/40 transition cursor-pointer group";
+            surahDiv.innerHTML = `
+                <div class="flex items-center gap-4" onclick="playTrack('${name}', '${audioSrc}')">
+                    <span class="w-10 h-10 rounded-xl bg-slate-800 text-slate-400 flex items-center justify-center font-bold text-sm group-hover:bg-indigo-600 group-hover:text-white transition">${surahNumber}</span>
+                    <div>
+                        <h3 class="font-bold text-white group-hover:text-indigo-400 transition">سورة ${name}</h3>
+                        <span class="text-xs text-slate-500">تلاوة خاشعة</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="event.stopPropagation(); toggleFavorite('${name}', '${reciterName}', '${audioSrc}', this)" class="w-10 h-10 rounded-xl bg-slate-800 text-slate-400 border border-slate-700/50 flex items-center justify-center hover:text-rose-500 transition">♥</button>
+                    <button onclick="playTrack('${name}', '${audioSrc}')" class="w-10 h-10 rounded-xl bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition">
+                        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    </button>
+                </div>
+            `;
+            surahListContainer.appendChild(surahDiv);
+        });
+
+        const audio = document.getElementById('main-audio');
+        const player = document.getElementById('audio-player');
+        const playBtn = document.getElementById('play-btn');
+
+        function playTrack(surah, src) {
+            document.getElementById('player-surah').textContent = "سورة " + surah;
+            audio.src = src;
+            player.classList.remove('hidden');
+            audio.play();
+            playBtn.innerHTML = '<svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
+        }
+
+        function toggleAudio() {
+            if (audio.paused) {
+                audio.play();
+                playBtn.innerHTML = '<svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
+            } else {
+                audio.pause();
+                playBtn.innerHTML = '<svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+            }
+        }
+
+        function toggleFavorite(surahName, reciterName, audioSrc, btn) {
+            let favorites = JSON.parse(localStorage.getItem('fav_surahs_items') || '[]');
+            const existsIndex = favorites.findIndex(f => f.surahName === surahName && f.reciterName === reciterName);
+            if (existsIndex > -1) {
+                favorites.splice(existsIndex, 1);
+                btn.classList.remove('text-rose-500', 'bg-rose-500/20');
+                btn.classList.add('text-slate-400');
+            } else {
+                favorites.push({ surahName, reciterName, audioSrc });
+                btn.classList.add('text-rose-500', 'bg-rose-500/20');
+                btn.classList.remove('text-slate-400');
+            }
+            localStorage.setItem('fav_surahs_items', JSON.stringify(favorites));
+        }
+
+        document.getElementById('surah-search').addEventListener('input', function(e) {
+            const query = e.target.value.trim().toLowerCase();
+            Array.from(surahListContainer.children).forEach(card => {
+                const title = card.querySelector('h3').textContent.toLowerCase();
+                card.style.display = title.includes(query) ? 'flex' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>

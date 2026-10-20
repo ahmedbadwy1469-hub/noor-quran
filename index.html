@@ -1,0 +1,67 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نُور | القرّاء (200 قارئ حسب الجنسية)</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap');
+        body { font-family: 'Tajawal', sans-serif; background-color: #0b0f19; color: #f3f4f6; }
+        .glow-effect { box-shadow: 0 0 30px -10px rgba(99, 102, 241, 0.2); }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white pb-20">
+
+    <!-- شريط علوي -->
+    <header class="w-full p-4 md:px-8 sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto bg-slate-900/60 backdrop-blur-xl border border-slate-800/80 rounded-2xl px-6 py-4 flex items-center justify-between glow-effect">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center font-black text-xl shadow-lg text-white">ن</div>
+                <span class="text-xl font-bold tracking-wider bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">نُور | Noor</span>
+            </div>
+            
+            <nav class="flex items-center gap-2 bg-slate-950/50 p-1.5 rounded-xl border border-slate-800/50 text-sm">
+                <a href="index.html" class="px-4 py-2 rounded-lg bg-indigo-600/20 text-indigo-400 font-semibold border border-indigo-500/30">القرّاء</a>
+                <a href="azkar.html" class="px-4 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/50 transition">الأذكار</a>
+                <a href="favorites.html" class="px-4 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/50 transition">المفضلة</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- المحتوى الرئيسي -->
+    <main class="flex-1 max-w-5xl w-full mx-auto p-4 md:p-8 flex flex-col gap-8">
+        
+        <!-- الترويسة والبحث -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-indigo-950/40 via-slate-900/40 to-slate-900/60 p-8 rounded-3xl border border-indigo-500/20 backdrop-blur-md">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-black text-white">موسوعة 200 قارئ حسب الجنسية 🌍</h1>
+                <p class="text-slate-400 text-sm mt-1">استمع إلى كبار القرّاء مقسّمين حسب بلادهم مع بحث وتصفية فورية</p>
+            </div>
+            <div class="relative w-full md:w-80">
+                <input id="search-input" type="text" placeholder="ابحث عن قارئ، رواية، أو دولة..." class="w-full bg-slate-950/60 border border-slate-800 px-4 py-3 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition">
+            </div>
+        </div>
+
+        <!-- أزرار الفلترة حسب الدولة -->
+        <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none" id="country-filters">
+            <button onclick="filterByCountry('الكل')" class="country-btn px-4 py-2 rounded-xl text-xs font-bold bg-indigo-600 text-white shrink-0 transition">الكل (200)</button>
+            <button onclick="filterByCountry('السعودية')" class="country-btn px-4 py-2 rounded-xl text-xs font-bold bg-slate-900/80 text-slate-400 border border-slate-800 hover:text-white shrink-0 transition">🇸🇦 السعودية</button>
+            <button onclick="filterByCountry('مصر')" class="country-btn px-4 py-2 rounded-xl text-xs font-bold bg-slate-900/80 text-slate-400 border border-slate-800 hover:text-white shrink-0 transition">🇪🇬 مصر</button>
+            <button onclick="filterByCountry('الكويت')" class="country-btn px-4 py-2 rounded-xl text-xs font-bold bg-slate-900/80 text-slate-400 border border-slate-800 hover:text-white shrink-0 transition">🇰🇼 الكويت</button>
+            <button onclick="filterByCountry('اليمن')" class="country-btn px-4 py-2 rounded-xl text-xs font-bold bg-slate-900/80 text-slate-400 border border-slate-800 hover:text-white shrink-0 transition">🇾🇪 اليمن</button>
+            <button onclick="filterByCountry('المغرب')" class="country-btn px-4 py-2 rounded-xl text-xs font-bold bg-slate-900/80 text-slate-400 border border-slate-800 hover:text-white shrink-0 transition">🇲🇦 المغرب</button>
+            <button onclick="filterByCountry('ليبيا')" class="country-btn px-4 py-2 rounded-xl text-xs font-bold bg-slate-900/80 text-slate-400 border border-slate-800 hover:text-white shrink-0 transition">🇱🇾 ليبيا</button>
+            <button onclick="filterByCountry('الجزائر')" class="country-btn px-4 py-2 rounded-xl text-xs font-bold bg-slate-900/80 text-slate-400 border border-slate-800 hover:text-white shrink-0 transition">🇩🇿 الجزائر</button>
+            <button onclick="filterByCountry('السودان')" class="country-btn px-4 py-2 rounded-xl text-xs font-bold bg-slate-900/80 text-slate-400 border border-slate-800 hover:text-white shrink-0 transition">🇸🇩 السودان</button>
+            <button onclick="filterByCountry('دول أخرى')" class="country-btn px-4 py-2 rounded-xl text-xs font-bold bg-slate-900/80 text-slate-400 border border-slate-800 hover:text-white shrink-0 transition">🌐 دول أخرى</button>
+        </div>
+
+        <!-- مجموعات الشيوخ مقسّمة حسب الجنسية -->
+        <div id="groups-container" class="flex flex-col gap-10">
+            <!-- سيتم توليد المجموعات تلقائياً للجنسيات عبر JavaScript -->
+        </div>
+
+    </main>
+    
