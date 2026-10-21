@@ -1,0 +1,15 @@
+{
+  "name": "noor-quran",
+  "version": "1.0.0",
+  "description": "نُور - موسوعة القرآن الكريم مع 200 قارئ",
+  "scripts": {
+    "build": "echo 'Static HTML site - no build needed'",
+    "dev": "python -m http.server 8000 || python3 -m http.server 8000"
+  },
+  "keywords": ["quran", "قرآن", "reciters", "islamic"],
+  "author": "ahmedbadwy1469-hub",
+  "license": "MIT",
+  "dependencies": {
+    "@vercel/analytics": "^1.1.1"
+  }
+}
