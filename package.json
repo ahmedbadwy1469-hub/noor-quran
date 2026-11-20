@@ -1,0 +1,20 @@
+{
+  "name": "noor-quran",
+  "version": "1.0.0",
+  "description": "Noor - Islamic Quran Reciters Platform with Vercel Web Analytics",
+  "scripts": {
+    "build": "echo 'Static site - no build required'",
+    "test": "echo 'No tests configured'"
+  },
+  "keywords": [
+    "quran",
+    "islamic",
+    "reciters",
+    "analytics"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@vercel/analytics": "^1.1.1"
+  }
+}
